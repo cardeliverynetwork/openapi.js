@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+    
+    <head>
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
+        <script type="text/javascript" src="openapi.js"></script>
+        <script type="text/javascript">
+            function handleError(status, message) {
+                $('body').append(status + " " + message + "<br />");
+            }
+
+            $(document).ready(function () {
+                var api = new cardeliverynetwork.openapi(
+                    "http://build.cardeliverynetwork.com/trunkuk/openapi",
+					"xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx");
+
+                jobs = [{}];
+                api.createJobs(jobs, function (data) {
+                    $('body').append(data[0].JobNumber + "<br />");
+                }, handleError);
+
+                api.getJob(165422, function (data) {
+                    $('body').append(data.JobNumber + "<br />");
+                }, handleError);
+
+                api.getJobVehicles(165422, function (data) {
+                    $('body').append(data[0].Registration + "<br />");
+                }, handleError);
+
+                api.getJobDocuments(165422, function (data) {
+                    $('body').append(data[0].Url + "<br />");
+                }, handleError);
+
+                api.getJobHistory(165422, function (data) {
+                    $('body').append(data[0].Notes + "<br />");
+                }, handleError);
+
+                api.getNetworks(function (data) {
+                    $('body').append(data[0].Id + "<br />");
+                }, handleError);
+
+                api.getNetworkUsers(113, function (data) {
+                    $('body').append(data[0].FirstName + "<br />");
+                }, handleError);
+            });
+        </script>
+        <title>cardeliverynetwork.openapi</title>
+    </head>
+    
+    <body></body>
+
+</html>
