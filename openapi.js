@@ -5,51 +5,57 @@ cardeliverynetwork.openapi = function (apiUrl, apiKey) {
 }
 cardeliverynetwork.openapi.prototype = {
 
-    createJobs: function (jobs, onSuccess, onFail) {
-        var resource = "Jobs";
-        call(this._apiUrl, this._apiKey, resource, "POST", onSuccess, onFail, false, jobs);
+    createJobs: function (jobs, success, fail) {
+        this.call("POST", "Jobs", success, fail, false, jobs);
     },
 
-    createJob: function (job, onSuccess, onFail) {
+    createJob: function (job, success, fail) {
         this.createJobs([job], function (responseData) {
-            onSuccess(responseData[0]);
-        }, onFail);
+            success(responseData[0]);
+        }, fail);
     },
 
-    getJob: function (id, onSuccess, onFail) {
-        var resource = "Jobs/" + id;
-        call(this._apiUrl, this._apiKey, resource, "GET", onSuccess, onFail);
+    getJob: function (id, success, fail) {
+        this.call("GET", "Jobs/" + id, success, fail);
     },
 
-    getJobBids: function (id, onSuccess, onFail) {
-        var resource = "Jobs/" + id + "/Bids";
-        call(this._apiUrl, this._apiKey, resource, "GET", onSuccess, onFail);
+    getJobBids: function (id, success, fail) {
+        this.call("GET", "Jobs/" + id + "/Bids", success, fail);
     },
 
-    getJobDocuments: function (id, onSuccess, onFail) {
-        var resource = "Jobs/" + id + "/Documents";
-        call(this._apiUrl, this._apiKey, resource, "GET", onSuccess, onFail);
+    getJobDocuments: function (id, success, fail) {
+        this.call("GET", "Jobs/" + id + "/Documents", success, fail);
     },
 
-    getJobHistory: function (id, onSuccess, onFail) {
-        var resource = "Jobs/" + id + "/History";
-        call(this._apiUrl, this._apiKey, resource, "GET", onSuccess, onFail);
+    getJobHistory: function (id, success, fail) {
+        this.call("GET", "Jobs/" + id + "/History", success, fail);
     },
 
-    getJobVehicles: function (id, onSuccess, onFail) {
-        var resource = "Jobs/" + id + "/Vehicles";
-        call(this._apiUrl, this._apiKey, resource, "GET", onSuccess, onFail);
+    getJobVehicles: function (id, success, fail) {
+        this.call("GET", "Jobs/" + id + "/Vehicles", success, fail);
     },
 
-    getNetworks: function (onSuccess, onFail) {
-        var resource = "Networks";
-        call(this._apiUrl, this._apiKey, resource, "GET", onSuccess, onFail);
+    getNetworks: function (success, fail) {
+        this.call("GET", "Networks", success, fail);
     },
 
-    getNetworkUsers: function (id, onSuccess, onFail) {
-        var resource = "Networks/" + id + "/Users";
-        call(this._apiUrl, this._apiKey, resource, "GET", onSuccess, onFail);
-    }
+    getNetworkUsers: function (id, success, fail) {
+        this.call("GET", "Networks/" + id + "/Users", success, fail);
+    },
+	
+	call: function (method, resuorce, success, fail, isUsingRemoteIds, data) {
+		$.ajax({
+			dataType: "json",
+			contentType: 'application/json',
+			type: method,
+			url: this._apiUrl + "/" + resuorce + "?ApiKey=" + this._apiKey + "&format=json",
+			data: JSON.stringify(data),
+			success: success,
+			error: function (errorData) {
+				fail(errorData.status, errorData.statusText);
+			}
+		});
+	}
 }
 cardeliverynetwork.Job = function () {
     this.Notes = "",
@@ -75,21 +81,4 @@ cardeliverynetwork.Job = function () {
         RequestedDateIsExact: false
     },
     this.Vehicles = [{}]
-}
-
-function call(apiUrl, apiKey, resuorce, method, onSuccess, onFail, isUsingRemoteIds, data) {
-    var callUrl = apiUrl + "/" + resuorce + "?ApiKey=" + apiKey + "&format=json";
-    $.ajax({
-        dataType: "json",
-        contentType: 'application/json',
-        type: method,
-        url: callUrl,
-        data: JSON.stringify(data),
-        success: function (responseData) {
-            onSuccess(responseData);
-        },
-        error: function (errorData) {
-            onFail(errorData.status, errorData.statusText);
-        }
-    });
 }
