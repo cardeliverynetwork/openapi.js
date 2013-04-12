@@ -42,20 +42,20 @@ cardeliverynetwork.openapi.prototype = {
     getNetworkUsers: function (id, success, fail) {
         this.call("GET", "Networks/" + id + "/Users", success, fail);
     },
-	
-	call: function (method, resuorce, success, fail, isUsingRemoteIds, data) {
-		$.ajax({
-			dataType: "json",
-			contentType: 'application/json',
-			type: method,
-			url: this._apiUrl + "/" + resuorce + "?ApiKey=" + this._apiKey + "&format=json",
-			data: JSON.stringify(data),
-			success: success,
-			error: function (errorData) {
-				fail(errorData.status, errorData.statusText);
-			}
-		});
-	}
+    
+    call: function (method, resuorce, success, fail, isUsingRemoteIds, data) {
+        $.ajax({
+            dataType: "json",
+            contentType: 'application/json',
+            type: method,
+            url: this._apiUrl + "/" + resuorce + "?ApiKey=" + this._apiKey + "&format=json",
+            data: JSON.stringify(data),
+            success: success,
+            error: function (errorData) {
+                fail(errorData.status, errorData.statusText);
+            }
+        });
+    }
 }
 cardeliverynetwork.Job = function () {
     this.Notes = "",
