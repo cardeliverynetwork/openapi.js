@@ -16,40 +16,49 @@
                     "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx");
 
                 var job = new cardeliverynetwork.Job();
-                job.CustomerReference = "My Ref";
-                job.Notes = "The Notes";
-                job.Pickup.Destination.City = "Sheffield";
+				var job_id = undefined;
+                job.CustomerReference = "Mr Doob";
+                job.Notes = "Here are the notes";
+                job.Pickup.Destination.City = "Gothenburg";
 
                 api.createJob(job, function (data) {
-                    $('body').append(data.JobNumber + "<br />");
-                    $('body').append(data.CustomerReference + "<br />");
-                    $('body').append(data.Notes + "<br />");
-                    $('body').append(data.Pickup.Destination.City + "<br />");
+                    $('body').append("job number " + data.JobNumber + "<br />");
+                    $('body').append("job Id " + data.Id + "<br />");
+                    $('body').append("Notes " + data.Notes + "<br />");
+                    $('body').append("Destination City " + data.Pickup.Destination.City + "<br />");
+					$('body').append(" Sent data  <br />");
+					getData(data.Id);
                 }, handleError);
+				
+				function getData(job){
+                	api.getJob(job, function (data) {
+                        $('body').append("1 getJob: " + data.JobNumber + "<br />");
+                	}, handleError);
 
-                api.getJob(165422, function (data) {
-                        $('body').append(data.JobNumber + "<br />");
-                }, handleError);
+                	api.getJobVehicles(job, function (data) {
+                        $('body').append("2 getJobVehicles: " + data[0].Registration + "<br />");
+                	}, handleError);
 
-                api.getJobVehicles(165422, function (data) {
-                        $('body').append(data[0].Registration + "<br />");
-                }, handleError);
+                	api.getJobDocuments(job, function (data) {
+                        $('body').append("3 getJobDocuments: " + data[0] + "<br />");
+                	}, handleError);
 
-                api.getJobDocuments(165422, function (data) {
-                        $('body').append(data[0].Url + "<br />");
-                }, handleError);
+                	api.getJobHistory(job, function (data) {
+                       	$('body').append("4 getJobHistory: " +data[0].Notes + "<br />");
+                	}, handleError);
 
-                api.getJobHistory(165422, function (data) {
-                       $('body').append(data[0].Notes + "<br />");
-                }, handleError);
+                	api.getNetworks(function (data) {
+                        $('body').append("5 getNetworks: " +data[0].Id + "<br />");
+						getNetworkData(data[0].Id)
+                	}, handleError);
 
-                api.getNetworks(function (data) {
-                        $('body').append(data[0].Id + "<br />");
-                }, handleError);
-
-                api.getNetworkUsers(113, function (data) {
-                        $('body').append(data[0].FirstName + "<br />");
-                }, handleError);
+                	
+				};
+				function getNetworkData(network){
+					api.getNetworkUsers(network, function (data) {
+                        $('body').append("6 getNetworkUsers for network "+network + " " +data[0].FirstName + "<br />");
+                	}, handleError);
+				};
             });
         </script>
         <title>cardeliverynetwork.openapi</title>
